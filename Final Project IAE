@@ -67,6 +67,10 @@ offset=$(grep ms dump | cut -d " " -f 8)
 testNtp="4"
 check=${#offset}
 echo $check
+#By changing to the length of the string it works
+#its basically the same thing as the commented code below.
+#if it reaches to 1000 or above it will be 4 characters long.
+#signaling its above the 1 ms requirement.
 #testNtp="1000"
 #if [ "$offset" -lt "$testNtp" ];
 if [ "$check" -lt "$testNtp" ];
