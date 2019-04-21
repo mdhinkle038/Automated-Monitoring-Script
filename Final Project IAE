@@ -2,13 +2,36 @@
 
 #1. Pings all of stackoverflow.com’s IP addresses
 clear
-ping -c 4 151.101.129.69
+if ping -c 4 151.101.129.69;
+then
+	ping1="true"
+else
+	ping1="false"
+fi
 clear
-ping -c 4 151.101.1.69
+
+if ping -c 4 151.101.1.69;
+then
+	ping2="true"
+else
+	ping2="false"
+fi
 clear
-ping -c 4 151.101.193.69
+
+if ping -c 4 151.101.193.69;
+then
+	ping3="true"
+else
+	ping3="false"
+fi
 clear
-ping -c 4 151.101.65.69
+
+if ping -c 4 151.101.65.69;
+then
+	ping4="true"
+else
+	ping4="false"
+fi
 clear
 
 
@@ -119,7 +142,12 @@ echo "</tr>" >> /var/www/html/index.html
 
 echo "<tr>" >> /var/www/html/index.html
 echo "<td>PING IPs</td>" >> /var/www/html/index.html
-echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb_GT-2P9xXXzuvHbzZ_BLA07mRKGHHg_AhH9eHGh4lO1jE4X12g' width='50' height='50'></td>" >> /var/www/html/index.html
+if [ "$ping1" = "true" ] || [ "$ping2" = "true" ] || [ "$ping3" = "true" ] || [ "$ping4" = "true" ];
+then
+	echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb_GT-2P9xXXzuvHbzZ_BLA07mRKGHHg_AhH9eHGh4lO1jE4X12g' width='50' height='50'></td>" >> /var/www/html/index.html
+else
+	echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr69dtWU-Hyvfi2MGr724NgcuaZNEFA5Aggmh_T7FopKi8jCei' width='50' height='50'></td>" >> /var/www/html/index.html
+fi
 echo "</tr>" >> /var/www/html/index.html
 
 #Tests to see if they can query 8.8.8.8 and 8.8.4.4 for DNS results
