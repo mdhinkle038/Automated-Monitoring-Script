@@ -67,6 +67,7 @@ offset=$(grep ms dump | cut -d " " -f 8)
 testNtp="4"
 check=${#offset}
 echo $check
+#testNtp="1000"
 #if [ "$offset" -lt "$testNtp" ];
 if [ "$check" -lt "$testNtp" ];
 then
@@ -117,7 +118,7 @@ echo "<td>PING IPs</td>" >> /var/www/html/index.html
 echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb_GT-2P9xXXzuvHbzZ_BLA07mRKGHHg_AhH9eHGh4lO1jE4X12g' width='50' height='50'></td>" >> /var/www/html/index.html
 echo "</tr>" >> /var/www/html/index.html
 
-
+#Tests to see if they can query 8.8.8.8 and 8.8.4.4 for DNS results
 echo "<tr>" >> /var/www/html/index.html
 echo "<td>QUERY DNS</td>" >> /var/www/html/index.html
 if [ "$GooQueryOne" = "true" ] || [ "$GooQueryTwo" = "true" ];
@@ -128,7 +129,7 @@ else
 fi
 echo "</tr>" >> /var/www/html/index.html
 
-
+#Tests to see if the aforementioned DNS servers provide the same IP addresses for stackoverflow.com
 echo "<tr>" >> /var/www/html/index.html
 echo "<td>DNS PROVIDES CORRECT IPS</td>" >> /var/www/html/index.html
 if [ "$stackQuery" = "true" ];
@@ -139,7 +140,7 @@ else
 fi
 echo "</tr>" >> /var/www/html/index.html
 
-
+#Tests to see if they can query time.nist.gov and pool.ntp.org for time.
 echo "<tr>" >> /var/www/html/index.html
 echo "<td>QUERY NTP</td>" >> /var/www/html/index.html
 if [ "$ntpQuery" = "true" ];
@@ -150,7 +151,7 @@ else
 fi
 echo "</tr>" >> /var/www/html/index.html
 
-
+#Tests to see if the aforementioned NTP servers provide the same time within 1 millisecond
 echo "<tr>" >> /var/www/html/index.html
 echo "<td>NTP TIME IS WITHIN 1MS</td>" >> /var/www/html/index.html
 if [ "$ntpTime" = "true" ];
@@ -161,7 +162,7 @@ else
 fi
 echo "</tr>" >> /var/www/html/index.html
 
-
+#Tests to see if stackoverflow.com’s web server is online by doing a wget on the site
 echo "<tr>" >> /var/www/html/index.html
 echo "<td>WEB SERVER ONLINE</td>" >> /var/www/html/index.html
 if [ "$webServer" = "true" ];
