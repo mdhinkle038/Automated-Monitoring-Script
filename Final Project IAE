@@ -1,0 +1,184 @@
+
+#!/bin/bash
+
+
+#1. Pings all of stackoverflow.com’s IP addresses
+clear
+ping -c 4 151.101.129.69
+clear
+ping -c 4 151.101.1.69
+clear
+ping -c 4 151.101.193.69
+clear
+ping -c 4 151.101.65.69
+clear
+
+
+#2. Tests to see if they can query 8.8.8.8 and 8.8.4.4 for DNS results
+if dig +noadditional +noquestion +nocomments +nocmd +nostats +short google.com @8.8.8.8;
+then
+	echo "success"
+	GooQueryOne="true"
+else
+	echo "failed"
+	GooQueryOne="false"
+fi
+
+if dig +noadditional +noquestion +nocomments +nocmd +nostats +short google.com @8.8.4.4;
+then 
+	echo "success"
+	GooQueryTwo="true"
+else
+	echo "failed"
+	GooQueryTwo="false"
+fi
+clear
+
+
+#3. Tests to see if the aforementioned DNS servers provide the same IP addresses for stackoverflow.com
+dig +noadditional +noquestion +nocomments +nocmd +nostats +short stackoverflow.com. @8.8.8.8 > /home/stack1
+dig +noadditional +noquestion +nocomments +nocmd +nostats +short stackoverflow.com. @8.8.4.4 > /home/stack2
+sort -n /home/stack1 > stack3
+sort -n /home/stack2 > stack4
+if cmp -s stack3 stack4;
+then
+        echo "success"
+        stackQuery="true"
+else
+        echo "failed"
+        stackQuery="false"
+fi
+clear
+
+
+#4. Tests to see if they can query time.nist.gov and pool.ntp.org for time.
+#5. Tests to see if the aforementioned NTP servers provide the same time within 1 millisecond
+if dig +noadditional +noquestion +nocomments +nocmd +nostats +short time.nist.gov && dig +noadditional +noquestion +nocomments +nocmd +nostats +short pool.ntp.org;
+then
+	echo "success"
+	ntpQuery="true"
+else
+	echo "failed"
+	ntpQuery="false"
+fi
+clear
+
+
+ntpstat > /home/dump
+offset=$(grep ms dump | cut -d " " -f 8)
+testNtp="4"
+check=${#offset}
+echo $check
+#if [ "$offset" -lt "$testNtp" ];
+if [ "$check" -lt "$testNtp" ];
+then
+	ntpTime="true"
+	echo "success $ntpTime $offset"
+else
+	ntpTime="false"
+	echo "$ntpTime $offset"
+fi
+clear
+
+
+#6. Tests to see if stackoverflow.com’s web server is online by doing a wget on the site
+if wget -qO- /dev/null $stackoverflow.com 
+then
+	webServer="false"
+else
+	webServer="true"
+fi
+clear
+
+
+#7. Outputing everything to a html file
+echo "<!DOCTYPE html>" > /var/www/html/index.html
+echo "<html>" >> /var/www/html/index.html
+echo "<title>FINAL PROJECT</title>" >> /var/www/html/index.html
+echo "<meta http-equiv='refresh' content='60'>" >> /var/www/html/index.html
+echo "<style>" >> /var/www/html/index.html
+echo "body { font-fmaily: sans-serif; }" >> /var/www/html/index.html
+echo "table { length: 50%; width: 50%; border-collapse: collapse; }" >> /var/www/html/index.html
+echo "td { text-align: center; }" >> /var/www/html/index.html
+echo "</style>" >> /var/www/html/index.html
+echo "</head>" >> /var/www/html/index.html
+echo "<body>" >> /var/www/html/index.html
+echo "<h1>FINAL PROJECT</h1>" >> /var/www/html/index.html
+echo "<p>This is the final product of Matt's final project.</p>" >> /var/www/html/index.html
+echo "<table border='1'>" >> /var/www/html/index.html
+
+
+echo "<tr>" >> /var/www/html/index.html
+echo "<th>Test</th>" >> /var/www/html/index.html
+echo "<th>Status</th>" >> /var/www/html/index.html
+echo "</tr>" >> /var/www/html/index.html
+
+
+echo "<tr>" >> /var/www/html/index.html
+echo "<td>PING IPs</td>" >> /var/www/html/index.html
+echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb_GT-2P9xXXzuvHbzZ_BLA07mRKGHHg_AhH9eHGh4lO1jE4X12g' width='50' height='50'></td>" >> /var/www/html/index.html
+echo "</tr>" >> /var/www/html/index.html
+
+
+echo "<tr>" >> /var/www/html/index.html
+echo "<td>QUERY DNS</td>" >> /var/www/html/index.html
+if [ "$GooQueryOne" = "true" ] || [ "$GooQueryTwo" = "true" ];
+then
+	echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb_GT-2P9xXXzuvHbzZ_BLA07mRKGHHg_AhH9eHGh4lO1jE4X12g' width='50' height='50'></td>" >> /var/www/html/index.html
+else
+	echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr69dtWU-Hyvfi2MGr724NgcuaZNEFA5Aggmh_T7FopKi8jCei' width='50' height='50'></td>" >> /var/www/html/index.html
+fi
+echo "</tr>" >> /var/www/html/index.html
+
+
+echo "<tr>" >> /var/www/html/index.html
+echo "<td>DNS PROVIDES CORRECT IPS</td>" >> /var/www/html/index.html
+if [ "$stackQuery" = "true" ];
+then
+	echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb_GT-2P9xXXzuvHbzZ_BLA07mRKGHHg_AhH9eHGh4lO1jE4X12g' width='50' height='50'></td>" >> /var/www/html/index.html
+else
+	echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr69dtWU-Hyvfi2MGr724NgcuaZNEFA5Aggmh_T7FopKi8jCei' width='50' height='50'></td>" >> /var/www/html/index.html
+fi
+echo "</tr>" >> /var/www/html/index.html
+
+
+echo "<tr>" >> /var/www/html/index.html
+echo "<td>QUERY NTP</td>" >> /var/www/html/index.html
+if [ "$ntpQuery" = "true" ];
+then
+	echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb_GT-2P9xXXzuvHbzZ_BLA07mRKGHHg_AhH9eHGh4lO1jE4X12g' width='50' height='50'></td>" >> /var/www/html/index.html
+else
+	echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr69dtWU-Hyvfi2MGr724NgcuaZNEFA5Aggmh_T7FopKi8jCei' width='50' height='50'></td>" >> /var/www/html/index.html
+fi
+echo "</tr>" >> /var/www/html/index.html
+
+
+echo "<tr>" >> /var/www/html/index.html
+echo "<td>NTP TIME IS WITHIN 1MS</td>" >> /var/www/html/index.html
+if [ "$ntpTime" = "true" ];
+then	
+	echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb_GT-2P9xXXzuvHbzZ_BLA07mRKGHHg_AhH9eHGh4lO1jE4X12g' width='50' height='50'></td>" >> /var/www/html/index.html
+else
+	echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr69dtWU-Hyvfi2MGr724NgcuaZNEFA5Aggmh_T7FopKi8jCei' width='50' height='50'></td>" >> /var/www/html/index.html
+fi
+echo "</tr>" >> /var/www/html/index.html
+
+
+echo "<tr>" >> /var/www/html/index.html
+echo "<td>WEB SERVER ONLINE</td>" >> /var/www/html/index.html
+if [ "$webServer" = "true" ];
+then
+	echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb_GT-2P9xXXzuvHbzZ_BLA07mRKGHHg_AhH9eHGh4lO1jE4X12g' width='50' height='50'></td>" >> /var/www/html/index.html
+else
+	echo "<td><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr69dtWU-Hyvfi2MGr724NgcuaZNEFA5Aggmh_T7FopKi8jCei' width='50' height='50'></td>" >> /var/www/html/index.html
+fi
+echo "</tr>" >> /var/www/html/index.html
+
+
+echo "</table>" >> /var/www/html/index.html
+echo "</body>" >> /var/www/html/index.html
+echo "</html>" >> /var/www/html/index.html
+
+
+
+
