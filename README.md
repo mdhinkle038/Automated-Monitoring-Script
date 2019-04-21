@@ -9,7 +9,7 @@ Tests to see if the aforementioned DNS servers provide the same IP addresses for
 
 Tests to see if they can query time.nist.gov and pool.ntp.org for time.
 
-Tests to see if the aforementioned NTP servers provide the same time within 1 millisecond.
+Tests to see if the aforementioned NTP servers provide the same time within 1 second.
 
 Tests to see if stackoverflow.com’s web server is online by doing a wget on the site.
 
