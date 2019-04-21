@@ -1,6 +1,4 @@
-
 #!/bin/bash
-
 
 #1. Pings all of stackoverflow.com’s IP addresses
 clear
